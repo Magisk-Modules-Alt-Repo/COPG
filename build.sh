@@ -60,8 +60,8 @@ mkdir -p "$STAGE/zygisk" "$STAGE/webroot"
 # ── assemble static module files ─────────────────────────────────────────────
 log "assembling module tree"
 cp -r module/.   "$STAGE/"            # everything that ships at module root: customize/service/uninstall.sh,
-                                      # config.json, banner.png, cpuinfo_spoof, common/,
-                                      # COPG.json, list.json, META-INF/
+                                      # config.json, banner.png, CPU/ (cpuinfo profiles + manifest),
+                                      # common/, COPG.json, list.json, META-INF/
 cp -r webroot/.  "$STAGE/webroot/"
 
 cat > "$STAGE/module.prop" <<EOF
