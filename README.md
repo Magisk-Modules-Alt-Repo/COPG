@@ -45,8 +45,9 @@ Spoof the CPU to flagship‑class silicon for apps that gate features on the chi
 </td>
 <td width="50%" valign="top">
 
-#### 🧩 GOT Hooking
-An extra spoofing method (GOT/PLT hooks) for apps that need a deeper layer than the default.
+#### 🧬 Prop Spoofing &amp; Android ID
+Stealth **copy‑on‑write** prop spoof (fingerprint, build props &amp; more) plus per‑app **Android ID**
+— the module unloads before the game runs, so nothing of COPG stays mapped in memory.
 
 #### 🎛️ Per‑App Comfort Tweaks
 Auto **Do‑Not‑Disturb**, **disable auto‑brightness**, **keep screen on** and **stop logging** —
@@ -152,8 +153,8 @@ straight from the manager. On **Magisk**, install the **KSU WebUI** app and open
 
 - 📋 **Library** — add &amp; manage **device profiles** and **per‑app spoof lists** with search,
   sort &amp; filters
-- ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU Spoofing /
-  GOT Hooking** and the **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
+- ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU Spoofing
+  (pick the chip) / Prop Spoof / Android ID** and the **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
 - 📊 **Dashboard** — live system info: Android, ABI, Zygisk variant, root &amp; kernel
 - 💾 **Backup / Restore** &amp; **Sync from GitHub**
 - 🎨 **Light / Dark / AMOLED** themes · 🌍 **8 languages** (EN, FA, AR, DE, ES, ID, TH, ZH)
@@ -180,8 +181,8 @@ The WebUI is the recommended way to manage profiles, but you can also edit
 }
 ```
 
-Package **tags** are colon suffixes — e.g. `:with_cpu` (CPU spoof), `:got` (GOT hooking),
-`:dnd` / `:dab` / `:kso` / `:nolog` (comfort tweaks).
+Package **tags** are colon suffixes — e.g. `:cpu=<model>` (CPU spoof + pick the chip), `:cow`
+(prop spoof), `:aid` (Android ID), `:dnd` / `:dab` / `:kso` / `:nolog` (comfort tweaks).
 
 </details>
 
