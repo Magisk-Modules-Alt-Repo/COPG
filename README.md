@@ -71,6 +71,7 @@ applied only while a tagged game is active, then restored.
 | **PUBG Mobile / BGMI** | 120 FPS · Haptic Feedback |
 | **Delta Force** | 120 FPS · HD Graphics |
 | **Free Fire / Free Fire MAX** | 144 FPS |
+| **Mobile Legends: Bang Bang** | 144 FPS |
 | **Fortnite** | 120 FPS |
 | **Asphalt 9** | 120 FPS |
 | **Farlight 84** | Max Graphics |
