@@ -4,6 +4,29 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
+## v5.4.0
+### Per-app CPU spoofing — pick any chip, or load your own
+*   **Choose a CPU model per app.** With CPU Spoofing now opens a **CPU profile picker** so each game can pretend to run on a *specific* chip. Ships with **8 profiles** out of the box — Qualcomm Snapdragon 8 Elite, HiSilicon Kirin 9000 / 9000S / 9020 / 9020A / 9030 Pro, and Xiaomi Xring O1 / O3.
+*   **Load your own `cpuinfo`.** Tap the **＋** next to the picker's search, choose any `cpuinfo` file from storage, give it a name, and it's saved into the module — **reusable across every app**, not just the one you're editing.
+*   **CPU spoof for CPU-Only packages too.** Packages in the CPU-Only list now get the same model picker.
+*   **Cleaner tags.** A spoofed app now carries a single `cpu=<model>` tag instead of a redundant pair — existing setups keep working and tidy themselves up when you re-save them.
+
+### Mobile Legends (and other multi-process games) fixed
+*   **Child processes are now spoofed.** Games that run extra processes (e.g. Mobile Legends' `:UnityKillsMe`) used to leak the **real** device in those processes because COPG only matched the exact process name. It now matches the **base package**, so every process of the game sees the spoof.
+*   **Added Mobile Legends variants** (Global, US, VNG, and the Moonton / Samsung / Huawei builds) to the device list.
+
+### Per-app ANDROID_ID
+*   **Opt an app into a unique ANDROID_ID.** A new **Spoof Android ID** toggle in the package editor derives a per-app ID from the device profile's seed — so each app gets a *different* ID (matching how real Android 8+ behaves), and the ⓘ previews the exact value the app will read. Still zero-residency: the module unloads before the app runs.
+
+### Stability
+*   **Fixed a crash with COW prop spoof on some devices.** On certain phones (e.g. OnePlus / Android 16) a spoofed property was stored in a "long" form that the COW edit corrupted, crashing apps at launch. COPG now detects those and skips them safely — the device is still spoofed via the Build.* fields; nothing crashes.
+
+### WebUI & polish
+*   Device editor: the **Serial** field moved into the **Advanced build props** group.
+*   Smoother in-app config (background-safe app-icon downloads, tightened security policy).
+*   **All 8 languages** brought to full parity.
+
+---
 ## v5.3.1
 ### Hotfix — CPU spoof rolled back (was causing bans)
 *   **Reverted the new CPU spoof method.** v5.3.0 mounted the fake `cpuinfo` inside each game's own process — but that mount is **visible to the app itself** (`/proc/self/mountinfo`), which some games flagged as tampering and **banned**. v5.3.1 restores the **previous CPU spoof** (system-level mount via the helper) that does not expose the mount to the app.

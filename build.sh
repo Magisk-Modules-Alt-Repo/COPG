@@ -18,8 +18,8 @@ set -euo pipefail
 REPO="$(cd "$(dirname "$0")" && pwd)"
 cd "$REPO"
 
-VERSION="${1:-5.3.1}"
-VERSION_CODE="${2:-531}"
+VERSION="${1:-5.4.0}"
+VERSION_CODE="${2:-540}"
 OUT_DIR="/storage/emulated/0/Download/COPG"
 BUILD_DIR="$REPO/.build"
 STAGE="$BUILD_DIR/module"
