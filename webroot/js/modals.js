@@ -139,6 +139,12 @@
             <span class="trow__label"><span data-i18n="pkg_t_withcpu">With CPU Spoofing</span>
               <span class="trow__info" role="button" tabindex="0" data-info="withcpu" data-i18n-attr="aria-label:info_aria" aria-label="What's this?">${INFO_SVG}</span></span>
             <span class="toggle"><input type="checkbox" id="pfWithCpu"><span class="toggle__track"><span class="toggle__thumb"></span></span></span></label>
+          <div class="trow-sub" id="pfCpuRow" style="display:none">
+            <span class="trow-sub__label" data-i18n="pkg_cpu_model">CPU Model</span>
+            <button type="button" class="field__input field__picker" id="pfCpuModel" data-i18n-attr="aria-label:pkg_cpu_model" aria-label="CPU Model">
+              <span class="field__picker-text" id="pfCpuModelText" data-i18n="pkg_cpu_default">Qualcomm Snapdragon 8 Elite</span>
+              <svg class="field__picker-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button></div>
           <label class="trow" id="pfBlockRow">
             <span class="trow__label"><span data-i18n="pkg_t_block">Block CPU</span>
               <span class="trow__info" role="button" tabindex="0" data-info="block" data-i18n-attr="aria-label:info_aria" aria-label="What's this?">${INFO_SVG}</span></span>
@@ -147,6 +153,10 @@
             <span class="trow__label"><span data-i18n="pkg_t_cow">COW Prop Spoof</span>
               <span class="trow__info" role="button" tabindex="0" data-info="cow" data-i18n-attr="aria-label:info_aria" aria-label="What's this?">${INFO_SVG}</span></span>
             <span class="toggle"><input type="checkbox" id="pfCow"><span class="toggle__track"><span class="toggle__thumb"></span></span></span></label>
+          <label class="trow" id="pfAidRow">
+            <span class="trow__label"><span data-i18n="pkg_t_aid">Spoof Android ID</span>
+              <span class="trow__info" id="pfAidInfo" role="button" tabindex="0" data-i18n-attr="aria-label:info_aria" aria-label="What's this?">${INFO_SVG}</span></span>
+            <span class="toggle"><input type="checkbox" id="pfAid"><span class="toggle__track"><span class="toggle__thumb"></span></span></span></label>
 
           <div class="toggles__head has-divider" id="pfTweakHead" data-i18n="pkg_sec_tweaks">Tweaks</div>
           <label class="trow" id="pfDndRow">
@@ -468,15 +478,33 @@
       text.dataset.i18n = devs.length ? 'pkg_pick_device' : 'pkg_no_devices';
     }
     clearFieldError(btn);
+    syncAidAvail();                              // AID toggle depends on the chosen device's seed
   }
   // kept name for the existing call sites (preselect on open/edit)
   function populateDeviceSelect(selectedKey) { setDeviceSelection(selectedKey); }
 
+  // The ANDROID_ID forge needs a SEED on the selected device profile. Read it from
+  // the device object (PACKAGES_X -> PACKAGES_X_DEVICE.ANDROID_ID).
+  function aidSeed() {
+    const key = $m('#pfDevice').dataset.deviceKey;
+    return key ? ((COPG.config[key + '_DEVICE'] || {}).ANDROID_ID || '') : '';
+  }
+  // No seed → the "Spoof Android ID" toggle is disabled + greyed (can't forge an id
+  // with nothing to derive from). The ⓘ still opens to explain why.
+  function syncAidAvail() {
+    const row = $m('#pfAidRow'), cb = $m('#pfAid');
+    if (!row || !cb) return;
+    const has = !!aidSeed();
+    cb.disabled = !has;
+    row.classList.toggle('trow--disabled', !has);
+    if (!has) cb.checked = false;
+  }
+
   // Spoof toggles (with_cpu/block/cow) are device-type only. Tweak toggles
   // (dnd/dab/kso/nolog) apply to device AND cpu_only. 'blocked' type gets neither.
   // with_cpu (mount) and block (unmount) are mutually exclusive — see wiring below.
-  const SPOOF_EL = ['pfSpoofHead', 'pfWithCpuRow', 'pfBlockRow', 'pfCowRow'];
-  const SPOOF_CB = ['pfWithCpu', 'pfBlock', 'pfCow'];
+  const SPOOF_EL = ['pfSpoofHead', 'pfWithCpuRow', 'pfBlockRow', 'pfCowRow', 'pfAidRow'];
+  const SPOOF_CB = ['pfWithCpu', 'pfBlock', 'pfCow', 'pfAid'];
   const TWEAK_EL = ['pfTweakHead', 'pfDndRow', 'pfDabRow', 'pfKsoRow', 'pfNologRow'];
   const TWEAK_CB = ['pfDnd', 'pfDab', 'pfKso', 'pfNolog'];
   function setType(type) {
@@ -492,6 +520,8 @@
     $m('#pfTweakHead').classList.toggle('has-divider', showSpoof);
     if (!showSpoof) SPOOF_CB.forEach(id => { $m('#' + id).checked = false; });
     if (!showTweak) TWEAK_CB.forEach(id => { $m('#' + id).checked = false; });
+    if (showSpoof) syncAidAvail();              // re-evaluate the AID toggle's seed gate
+    syncCpuPick();                              // CPU model row visibility (device + with_cpu)
   }
   function currentType() {
     return ($m('#pfType .seg__opt.active') || {}).dataset?.type || 'device';
@@ -509,8 +539,27 @@
   // CPU spoof is opt-in (v4.7.3): "With CPU Spoofing" mounts the fake cpuinfo,
   // "Block CPU" unmounts it (forces real cpuinfo even if a global mount leaked).
   // They're opposite actions → mutually exclusive: turning one on clears the other.
-  $m('#pfWithCpu').addEventListener('change', () => { if ($m('#pfWithCpu').checked) $m('#pfBlock').checked = false; });
-  $m('#pfBlock').addEventListener('change',   () => { if ($m('#pfBlock').checked)   $m('#pfWithCpu').checked = false; });
+  $m('#pfWithCpu').addEventListener('change', () => { if ($m('#pfWithCpu').checked) $m('#pfBlock').checked = false; syncCpuPick(); });
+  $m('#pfBlock').addEventListener('change',   () => { if ($m('#pfBlock').checked)   $m('#pfWithCpu').checked = false; syncCpuPick(); });
+
+  // CPU model sub-row (revealed only when "With CPU Spoofing" is on, device type).
+  // Selected key lives on #pfCpuModel.dataset.cpuKey; '' = legacy default (Snapdragon).
+  function setCpuSelection(key) {
+    const btn = $m('#pfCpuModel'); if (!btn) return;
+    btn.dataset.cpuKey = key || '';
+    $m('#pfCpuModelText').textContent = (key && COPG.cpuModelName(key)) || I18N.t('pkg_cpu_default');
+  }
+  function syncCpuPick() {
+    const row = $m('#pfCpuRow'); if (!row) return;
+    const t = currentType();
+    // device → only when CPU spoof is toggled on; cpu_only → always (it always mounts).
+    const show = (t === 'device' && $m('#pfWithCpu').checked) || t === 'cpu_only';
+    row.style.display = show ? '' : 'none';
+  }
+  $m('#pfCpuModel').addEventListener('click', () => {
+    if (!w.CpuPicker) return;
+    CpuPicker.open($m('#pfCpuModel').dataset.cpuKey || '', sel => setCpuSelection(sel.key));
+  });
 
   // COW Prop Spoof is stealth (per-process copy-on-write prop edit, module
   // unloads before the app runs → zero memory residency), so no risk confirm —
@@ -537,6 +586,26 @@
     el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openInfo(el, e); });
   });
 
+  // AID ⓘ is DYNAMIC: it previews the exact id this app will read (seed + package,
+  // via COPG.deriveAndroidId — byte-identical to the native derive), or explains the
+  // no-seed / no-package case. (Its plain .trow__info also got the generic no-op
+  // handler above, which just stops the row toggle — harmless; we add the popup here.)
+  function openAidInfo(e) {
+    e.preventDefault(); e.stopPropagation();
+    const seed = aidSeed();
+    const pkg  = COPG.clean(($m('#pfPackage').value || '').trim());
+    let msg;
+    if (!seed)      msg = I18N.t('info_pkgaid_noseed');
+    else if (!pkg)  msg = I18N.t('info_pkgaid_msg') + ' ' + I18N.t('info_pkgaid_nopkg');
+    else            msg = I18N.t('info_pkgaid_msg') + ' ' + I18N.t('info_pkgaid_value') + ' ' + COPG.deriveAndroidId(seed, pkg);
+    info({ title: I18N.t('info_pkgaid_title'), message: msg });
+  }
+  const aidInfoEl = $m('#pfAidInfo');
+  if (aidInfoEl) {
+    aidInfoEl.addEventListener('click', openAidInfo);
+    aidInfoEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openAidInfo(e); });
+  }
+
   function openPackage(pkg) {
     const form = $m('#packageForm');
     clearErrors(form);
@@ -552,15 +621,21 @@
       $m('#pfWithCpu').checked  = !!pkg.with_cpu;
       $m('#pfBlock').checked    = !!pkg.blocked;
       $m('#pfCow').checked      = !!pkg.cow;
+      $m('#pfAid').checked      = !!pkg.aid;
       $m('#pfDnd').checked      = !!pkg.dnd;
       $m('#pfDab').checked      = !!pkg.dab;
       $m('#pfKso').checked      = !!pkg.kso;
       $m('#pfNolog').checked    = !!pkg.nolog;
+      setCpuSelection(pkg.cpuModel || '');
     } else {
       form.reset();
       setType('device');
       populateDeviceSelect(null);
+      setCpuSelection('');
     }
+    if (COPG.getCpuModels) COPG.getCpuModels();  // warm the model-name cache for display
+    syncAidAvail();                             // final gate after checkboxes are set
+    syncCpuPick();
     openModal('packageModal');
   }
 
@@ -596,6 +671,8 @@
       with_cpu: $m('#pfWithCpu').checked,
       blocked: $m('#pfBlock').checked,
       cow: $m('#pfCow').checked,
+      aid: $m('#pfAid').checked,
+      cpuModel: $m('#pfCpuModel').dataset.cpuKey || '',   // upsertPackage gates by type/with_cpu
       dnd: $m('#pfDnd').checked,
       dab: $m('#pfDab').checked,
       kso: $m('#pfKso').checked,

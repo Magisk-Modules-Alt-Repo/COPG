@@ -7,11 +7,12 @@
      "PACKAGES_<KEY>":        [ "com.x:blocked", "com.y:with_cpu" ] // a device's game list
      "PACKAGES_<KEY>_DEVICE": { BRAND, DEVICE, MANUFACTURER, MODEL,
                                 FINGERPRINT, PRODUCT, SERIAL?, ANDROID_ID?, ANDROID_VERSION?, SDK_INT?,
+                                // ANDROID_ID = a per-app SEED: zygisk derives a distinct id per package (seed+pkg hash)
                                 // optional extra Build fields (JNI + COW), all strings:
                                 BOARD?, HARDWARE?, DISPLAY?, ID?, BOOTLOADER?, TAGS?, TYPE?,
                                 SECURITY_PATCH?, INCREMENTAL?, CODENAME?, SOC_MANUFACTURER?, SOC_MODEL? }
    Insertion order of keys is meaningful and preserved on save (keyOrder).
-   Package tags are colon suffixes: pkg:blocked, pkg:with_cpu, pkg:cow.
+   Package tags are colon suffixes: pkg:blocked, pkg:with_cpu, pkg:cow, pkg:aid (per-app ANDROID_ID opt-in).
    Logic ported from the previous WebUI (old.js) for full parity.
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 (function (w) {
@@ -63,6 +64,120 @@
     return join(clean(pkg), tagsOf(pkg).filter(x => x !== tag));
   }
   const hasTag = (pkg, tag) => tagsOf(pkg).includes(tag);
+
+  /* ─── CPU model value-tag (cpu=<key>) ───
+     For a with_cpu app, this picks WHICH cpuinfo profile the native companion mounts
+     (CPU/cpuinfo_<key>). It's a colon value-tag carrying a value after '=' (unlike the
+     boolean tags); empty/absent → the legacy default file (Snapdragon 8 Elite). */
+  const cpuModelOf = pkg => {
+    const t = tagsOf(pkg).find(x => x.indexOf('cpu=') === 0);
+    return t ? t.slice(4) : '';
+  };
+  function setCpuModel(pkg, key) {
+    const t = tagsOf(pkg).filter(x => x.indexOf('cpu=') !== 0);   // drop any existing cpu=*
+    if (key) t.push('cpu=' + key);
+    return join(clean(pkg), t);
+  }
+
+  /* ─── Per-app ANDROID_ID derive (BYTE-FOR-BYTE parity with deriveAndroidId() in
+     spoof_module.cpp) ───
+     The device profile's ANDROID_ID is a SEED; the native side mixes seed+":"+package
+     (FNV-1a 64 → splitmix64 → 16 hex) so each app gets a distinct, stable id. We mirror
+     it here ONLY to PREVIEW the value the app will read in the package modal's ⓘ — so
+     this MUST match the C++ exactly (verified). Package names + hex seeds are ASCII, so
+     charCodeAt & 0xff == the C++ byte. Empty seed → '' (caller shows the no-seed hint). */
+  function deriveAndroidId(seed, pkg) {
+    if (!seed) return '';
+    const MASK = (1n << 64n) - 1n;
+    let h = 14695981039346656037n;                 // FNV-1a 64 offset basis
+    const s = String(seed) + ':' + clean(String(pkg || ''));
+    for (let i = 0; i < s.length; i++) { h ^= BigInt(s.charCodeAt(i) & 0xff); h = (h * 1099511628211n) & MASK; }
+    h = (h + 0x9E3779B97F4A7C15n) & MASK;           // splitmix64 finalizer
+    h = ((h ^ (h >> 30n)) * 0xBF58476D1CE4E5B9n) & MASK;
+    h = ((h ^ (h >> 27n)) * 0x94D049BB133111EBn) & MASK;
+    h = (h ^ (h >> 31n)) & MASK;
+    return h.toString(16).padStart(16, '0');
+  }
+
+  /* ─── CPU model library (CPU/cpuinfo_<key> + CPU/manifest.json) ───
+     The picker's display names come from the shipped manifest; on device we cat the
+     real file (so user-added custom profiles appear), and fall back to this built-in
+     list (also the preview list, since the browser can't read the module dir). Keep
+     BUILTIN in sync with module/CPU/manifest.json. */
+  const CPU_DIR = MODULE_DIR + '/CPU';
+  const BUILTIN_CPU_MODELS = [
+    { key: 'sd8elite',   name: 'Qualcomm Snapdragon 8 Elite' },
+    { key: '9000',       name: 'HiSilicon Kirin 9000' },
+    { key: '9000s',      name: 'HiSilicon Kirin 9000S' },
+    { key: '9020',       name: 'HiSilicon Kirin 9020' },
+    { key: '9020a',      name: 'HiSilicon Kirin 9020A' },
+    { key: '9030pro',    name: 'HiSilicon Kirin 9030 Pro' },
+    { key: 'xuanjie_o1', name: 'Xiaomi Xring O1' },
+    { key: 'xuanjie_o3', name: 'Xiaomi Xring O3' },
+  ];
+  let cpuModelsCache = null;
+  async function getCpuModels() {
+    if (cpuModelsCache) return cpuModelsCache;
+    if (!hasBridge()) { cpuModelsCache = BUILTIN_CPU_MODELS.slice(); return cpuModelsCache; }
+    try {
+      const obj = JSON.parse(await execCommand(`cat ${CPU_DIR}/manifest.json`));
+      const models = (obj && Array.isArray(obj.models))
+        ? obj.models.filter(m => m && m.key && m.name) : [];
+      cpuModelsCache = models.length ? models : BUILTIN_CPU_MODELS.slice();
+    } catch (e) { cpuModelsCache = BUILTIN_CPU_MODELS.slice(); }
+    return cpuModelsCache;
+  }
+  /* sync display-name lookup off the loaded cache (BUILTIN fallback before load) */
+  function cpuModelName(key) {
+    if (!key) return '';
+    const m = (cpuModelsCache || BUILTIN_CPU_MODELS).find(x => x.key === key);
+    return m ? m.name : key;
+  }
+
+  /* key from a user-given name, sanitized to [a-z0-9_] — matches the companion's
+     path-traversal guard (CPU/cpuinfo_<key>). */
+  function cpuKeyFromName(name) {
+    return String(name || '').trim().toLowerCase()
+      .replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40);
+  }
+  /* Import a user-supplied cpuinfo file as a reusable CPU profile: writes it to
+     CPU/cpuinfo_<key> (0444 + system_file context so the bind-mount reads like a
+     real system file) and appends {key,name} to CPU/manifest.json. Throws a short
+     code on validation failure (mapped to a message in the picker UI). */
+  async function importCpuModel(name, text) {
+    name = String(name || '').trim();
+    const body = String(text || '');
+    if (!name)                 throw new Error('name_required');
+    if (!body.trim())          throw new Error('empty');
+    if (body.length > 262144)  throw new Error('too_large');
+    if (!/(^|\n)\s*processor\s*:/i.test(body) && !/Hardware\s*:/i.test(body))
+      throw new Error('not_cpuinfo');
+    const key = cpuKeyFromName(name);
+    if (!key)                  throw new Error('bad_name');
+    const models = (await getCpuModels()).slice();
+    if (models.some(m => m.key === key)) throw new Error('exists');
+    const entry = { key, name };
+    if (!hasBridge()) {                       // preview: can't persist; this session only
+      models.push(entry); cpuModelsCache = models; previewUnsaved = true;
+      return { ...entry, preview: true };
+    }
+    const file = `${CPU_DIR}/cpuinfo_${key}`;
+    await execCommand(`mkdir -p ${CPU_DIR}`);
+    await execCommand(`echo '${b64(body)}' | base64 -d > ${file}`);
+    try {
+      await execCommand(`chmod 0444 ${file}`);
+      await execCommand(`chcon u:object_r:system_file:s0 ${file}`);
+    } catch (e) { console.warn('cpu import chmod/chcon:', e); }
+    const next = { models: models.concat([entry]) };
+    const mf = `${CPU_DIR}/manifest.json`;
+    await execCommand(`echo '${b64(JSON.stringify(next, null, 2) + '\n')}' | base64 -d > ${mf}`);
+    try {
+      await execCommand(`chmod 0644 ${mf}`);
+      await execCommand(`chcon u:object_r:system_file:s0 ${mf}`);
+    } catch (e) { console.warn('cpu manifest chmod/chcon:', e); }
+    cpuModelsCache = next.models;
+    return entry;
+  }
 
   /* ─── Android ↔ SDK mapping (from old.js) ─── */
   const androidToSdk = {
@@ -177,9 +292,11 @@
         clean: c, raw, type, deviceKey: deviceKey || null,
         deviceName: deviceName || null,
         tags: tagsOf(raw),
-        with_cpu: hasTag(raw, 'with_cpu'),
+        with_cpu: hasTag(raw, 'with_cpu') || !!cpuModelOf(raw),   // cpu=<key> alone = CPU spoof on
         blocked: hasTag(raw, 'blocked'),
         cow: hasTag(raw, 'cow'),
+        aid: hasTag(raw, 'aid'),
+        cpuModel: cpuModelOf(raw),
         dnd: hasTag(raw, 'dnd'),
         dab: hasTag(raw, 'dab'),
         kso: hasTag(raw, 'kso'),
@@ -323,10 +440,18 @@
     // with_cpu (mount) and blocked (unmount) are mutually exclusive — with_cpu wins if both.
     let finalPkg = cleanName;
     if (type === 'device') {
-      if (form.with_cpu)       finalPkg = addTag(finalPkg, 'with_cpu');
+      // CPU spoof writes a single cpu=<key> tag (no redundant 'with_cpu'); the key
+      // both enables the mount and picks the profile. Default pick = sd8elite
+      // (byte-identical to the legacy cpuinfo_spoof). Bare 'with_cpu' is never
+      // written anymore — only still PARSED for back-compat with old configs.
+      if (form.with_cpu)       finalPkg = setCpuModel(finalPkg, form.cpuModel || 'sd8elite');
       else if (form.blocked)   finalPkg = addTag(finalPkg, 'blocked');
       if (form.cow)            finalPkg = addTag(finalPkg, 'cow');
+      if (form.aid)            finalPkg = addTag(finalPkg, 'aid');
     }
+    // cpu_only entries always mount (they're the global cpu-only list), so they
+    // carry a cpu=<key> too — the picker chooses which profile, default sd8elite.
+    if (type === 'cpu_only') finalPkg = setCpuModel(finalPkg, form.cpuModel || 'sd8elite');
     if (type === 'device' || type === 'cpu_only') {
       if (form.dnd)       finalPkg = addTag(finalPkg, 'dnd');
       if (form.dab)       finalPkg = addTag(finalPkg, 'dab');
@@ -1093,7 +1218,8 @@
     fetchPlayIconUrl, fetchFdroidIconUrl, fetchAppIconUrl, batchFetchIcons, clearIconCache,
     // helpers exposed for modals/UI
     clean, tagsOf, hasTag, deviceKeyFromName, pkgKeyOf,
-    sdkFromAndroid, androidFromSdk,
+    sdkFromAndroid, androidFromSdk, deriveAndroidId,
+    cpuModelOf, setCpuModel, getCpuModels, cpuModelName, importCpuModel,
     // flags / raw access
     get config()    { return config; },
     get keyOrder()  { return keyOrder; },

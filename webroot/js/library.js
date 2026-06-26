@@ -181,7 +181,7 @@ function renderPackages() {
 
     // chips: tags + installed (type now shown above the name, not as a chip)
     const chips = card.querySelector('.package-card__chips');
-    if (pkg.with_cpu)    chips.appendChild(chip('chip--withcpu', I18N.t('tag_withcpu')));
+    if (pkg.with_cpu)    chips.appendChild(chip('chip--withcpu', pkg.cpuModel ? COPG.cpuModelName(pkg.cpuModel) : I18N.t('tag_withcpu')));
     if (pkg.blocked)     chips.appendChild(chip('chip--blocked', I18N.t('tag_block')));
     if (pkg.cow)         chips.appendChild(chip('chip--cow', I18N.t('tag_cow')));
     // tweak tags — muted shared style so they read as a group, not as loud as spoof chips

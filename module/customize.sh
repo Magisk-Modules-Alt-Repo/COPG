@@ -326,6 +326,19 @@ fi
         chcon u:object_r:system_file:s0 "$file" 2>/dev/null
       fi
     done
+
+    # Per-app CPU profiles (CPU/cpuinfo_<key>) bind-mount onto /proc/cpuinfo, so each
+    # must read like a normal system file — same 0444 + system_file context as the
+    # legacy cpuinfo_spoof (wrong context = unreadable mount / tamper signal).
+    if [ -d "$MODPATH/CPU" ]; then
+      chmod 0644 "$MODPATH/CPU/manifest.json" 2>/dev/null
+      for file in "$MODPATH/CPU/"cpuinfo_*; do
+        [ -f "$file" ] && chmod 0444 "$file" 2>/dev/null
+      done
+      for file in "$MODPATH/CPU/"*; do
+        [ -f "$file" ] && chcon u:object_r:system_file:s0 "$file" 2>/dev/null
+      done
+    fi
     
     # Clean up unused architecture files to reduce module size
     cleanup_unused_architectures

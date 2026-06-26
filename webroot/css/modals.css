@@ -186,6 +186,23 @@
   font-size:.82rem; font-weight:500; color:var(--text-primary);
 }
 .trow + .trow { border-top:1px solid var(--glass-border); }
+/* disabled toggle row (e.g. Spoof Android ID with no device seed): greyed + the
+   switch is unclickable, but the ⓘ stays live to explain why (its own pointer-events). */
+.trow--disabled { opacity:.45; }
+.trow--disabled .toggle { pointer-events:none; }
+.trow--disabled .trow__info { opacity:1; pointer-events:auto; }
+/* reveal sub-row under a toggle (CPU model picker under "With CPU Spoofing").
+   Indented to read as a child of the toggle above it; the picker button reuses
+   .field__picker styling. */
+.trow-sub {
+  display:flex; align-items:center; gap:10px;
+  padding:6px 14px 12px 26px;
+  border-top:1px solid var(--glass-border);
+}
+.trow-sub__label {
+  flex-shrink:0; font-size:.74rem; font-weight:500; color:var(--text-secondary);
+}
+.trow-sub .field__picker { flex:1; min-width:0; padding:9px 12px; }
 /* group header inside a .toggles card (Spoofing / Tweaks …). Subsequent groups get
    a divider above. Future input-based tweaks (custom DPI, etc.) can sit as a .trow
    followed by a reveal-on-toggle body without changing this header pattern. */
@@ -303,6 +320,68 @@
 }
 .picker-search input::placeholder { color:var(--text-tertiary); font-weight:400; }
 .picker-search input::-webkit-search-cancel-button { -webkit-appearance:none; appearance:none; }
+
+/* ── CPU picker: search row + compact "+" import button ── */
+.picker-searchrow { display:flex; align-items:stretch; gap:10px; margin:0 12px 8px; }
+.picker-searchrow .picker-search { flex:1; min-width:0; margin:0; }
+/* same height/border as .picker-search so the two align; icon-only square pill */
+.picker-add {
+  flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+  width:44px; border-radius:var(--radius-lg);
+  background:rgba(129,140,248,.14); border:1px solid rgba(129,140,248,.3);
+  color:var(--accent-primary); cursor:pointer; outline:none;
+  appearance:none; -webkit-appearance:none;
+  transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
+             transform var(--dur-fast) var(--spring);
+}
+.picker-add:hover  { background:rgba(129,140,248,.22); border-color:var(--glass-border-active); }
+.picker-add:active { transform:scale(.93); }
+.picker-add svg { width:18px; height:18px; }
+
+/* ── Import custom cpuinfo panel (collapsed by default) ── */
+.picker-import__panel {
+  margin:0 12px 10px; padding:12px;
+  display:flex; flex-direction:column; gap:10px;
+  border-radius:var(--radius-lg);
+  background:var(--glass-bg); border:1px solid var(--glass-border);
+}
+.picker-import__panel[hidden] { display:none; }   /* class display:flex would beat bare [hidden] */
+.picker-import__title {
+  font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--text-tertiary);
+}
+.picker-import__name {
+  width:100%; box-sizing:border-box; padding:10px 12px;
+  border-radius:var(--radius-md); border:1px solid var(--glass-border);
+  background:var(--bg-elevated, var(--glass-bg)); outline:none;
+  color:var(--text-primary); font-family:var(--font-sans); font-size:.85rem; font-weight:500;
+}
+.picker-import__name:focus-within, .picker-import__name:focus {
+  border-color:var(--glass-border-active); box-shadow:0 0 0 3px rgba(129,140,248,.12);
+}
+.picker-import__name::placeholder { color:var(--text-tertiary); font-weight:400; }
+.picker-import__filerow { display:flex; align-items:center; gap:10px; min-width:0; }
+.picker-import__filebtn {
+  flex-shrink:0; padding:8px 13px; border-radius:var(--radius-full);
+  background:var(--glass-bg); border:1px solid var(--glass-border);
+  color:var(--text-secondary); font-family:var(--font-sans);
+  font-size:.78rem; font-weight:600; cursor:pointer; appearance:none; -webkit-appearance:none;
+}
+.picker-import__filebtn:active { transform:scale(.96); }
+.picker-import__fname {
+  flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  color:var(--text-tertiary); font-size:.76rem;
+}
+.picker-import__err { color:var(--accent-danger); font-size:.76rem; font-weight:500; }
+.picker-import__save {
+  align-self:flex-start; padding:9px 16px; border-radius:var(--radius-full);
+  background:var(--accent-primary); border:none; color:#fff;
+  font-family:var(--font-sans); font-size:.8rem; font-weight:700; cursor:pointer;
+  appearance:none; -webkit-appearance:none;
+  transition:transform var(--dur-fast) var(--spring), opacity var(--dur-fast) var(--ease-out);
+}
+.picker-import__save:active { transform:scale(.97); }
+.picker-import__save:disabled { opacity:.5; pointer-events:none; }
 
 /* ── Picker filter chips + sort toggle ──
    pk-* names are deliberately distinct from the Library's lib-* controls so a
