@@ -9,7 +9,7 @@
 *   **Choose a CPU model per app.** With CPU Spoofing now opens a **CPU profile picker** so each game can pretend to run on a *specific* chip. Ships with **8 profiles** out of the box — Qualcomm Snapdragon 8 Elite, HiSilicon Kirin 9000 / 9000S / 9020 / 9020A / 9030 Pro, and Xiaomi Xring O1 / O3.
 *   **Load your own `cpuinfo`.** Tap the **＋** next to the picker's search, choose any `cpuinfo` file from storage, give it a name, and it's saved into the module — **reusable across every app**, not just the one you're editing.
 *   **CPU spoof for CPU-Only packages too.** Packages in the CPU-Only list now get the same model picker.
-*   **Cleaner tags.** A spoofed app now carries a single `cpu=<model>` tag instead of a redundant pair — existing setups keep working and tidy themselves up when you re-save them.
+*   **Cleaner tags.** A spoofed app now carries a single `cpu=` tag (with the model baked in) instead of a redundant pair — existing setups keep working and tidy themselves up when you re-save them.
 
 ### Mobile Legends (and other multi-process games) fixed
 *   **Child processes are now spoofed.** Games that run extra processes (e.g. Mobile Legends' `:UnityKillsMe`) used to leak the **real** device in those processes because COPG only matched the exact process name. It now matches the **base package**, so every process of the game sees the spoof.
