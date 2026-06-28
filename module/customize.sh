@@ -166,25 +166,20 @@ cleanup_unused_architectures() {
   # IMPORTANT: Check in order from most specific to least specific
   # x86_64 is the most specific (emulators with full compatibility)
   if echo "$ABI_LIST" | grep -q "x86_64"; then
-    ui_print " 🧹 x86_64 emulator - keeping all architectures..."
-    # Keep everything for Houdini compatibility
-    ui_print " ✓ Kept: x86_64, x86, ARM64, ARM32"
-  
-  # x86 32-bit (rare)
-  elif echo "$ABI_LIST" | grep -q "x86" && ! echo "$ABI_LIST" | grep -q "x86_64"; then
-    ui_print " 🧹 x86 32-bit device - keeping x86 + ARM32..."
-    rm -f "$MODPATH/zygisk/arm64-v8a.so" "$MODPATH/zygisk/x86_64.so" 2>/dev/null
-    ui_print " ✓ Kept: x86, ARM32"
-  
+    ui_print " 🧹 x86_64 emulator - keeping x86_64 + ARM (Houdini)..."
+    # Keep x86_64 + ARM (ARM apps run via Houdini translation in the x86_64
+    # process). x86 32-bit is not shipped — no KernelSU/Zygisk host runs it.
+    ui_print " ✓ Kept: x86_64, ARM64, ARM32"
+
   # ARM devices (phones, tablets)
   elif echo "$ABI_LIST" | grep -qE "arm64|armeabi|armv7|arm"; then
-    ui_print " 🧹 ARM device - removing x86/x86_64 libraries..."
-    rm -f "$MODPATH/zygisk/x86.so" "$MODPATH/zygisk/x86_64.so" 2>/dev/null
+    ui_print " 🧹 ARM device - removing x86_64 library..."
+    rm -f "$MODPATH/zygisk/x86_64.so" 2>/dev/null
     ui_print " ✓ Kept: ARM64 + ARM32"
   fi
-  
+
   # Remove all controller source files (we only need 'controller')
-  rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_armv7" "$MODPATH/controller_x86" "$MODPATH/controller_x86_64" 2>/dev/null
+  rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_armv7" "$MODPATH/controller_x86_64" 2>/dev/null
 }
 
 print_module_version
@@ -222,7 +217,6 @@ if $INSTALL_SUCCESS; then
   ARM64_VARIANTS="arm64-v8a|armv8-a|arm64|aarch64"
   ARM32_VARIANTS="armeabi-v7a|armeabi|armv7-a|armv7l|armhf|arm"
   X86_64_VARIANTS="x86_64|amd64"
-  X86_VARIANTS="x86|i386|i686"
 
   ABI_LIST=$(getprop ro.product.cpu.abilist)
   ui_print " 📜 Supported ABIs: $ABI_LIST"
@@ -245,7 +239,7 @@ if $INSTALL_SUCCESS; then
           ui_print " ➤ ($ABI)                        "
           CONTROLLER_INSTALLED=true
           
-          rm -f "$MODPATH/controller_armv7" "$MODPATH/controller_x86" "$MODPATH/controller_x86_64" 2>/dev/null
+          rm -f "$MODPATH/controller_armv7" "$MODPATH/controller_x86_64" 2>/dev/null
           break
         fi
       elif echo "$ABI" | grep -qE "$ARM32_VARIANTS"; then
@@ -262,7 +256,7 @@ if $INSTALL_SUCCESS; then
           ui_print " ➤ ($ABI)                        "
           CONTROLLER_INSTALLED=true
           
-          rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_x86" "$MODPATH/controller_x86_64" 2>/dev/null
+          rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_x86_64" 2>/dev/null
           break
         fi
       elif echo "$ABI" | grep -qE "$X86_64_VARIANTS"; then
@@ -279,24 +273,7 @@ if $INSTALL_SUCCESS; then
           ui_print " ➤ ($ABI)                        "
           CONTROLLER_INSTALLED=true
           
-          rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_armv7" "$MODPATH/controller_x86" 2>/dev/null
-          break
-        fi
-      elif echo "$ABI" | grep -qE "$X86_VARIANTS"; then
-        if [ -f "$MODPATH/controller_x86" ]; then
-          mv "$MODPATH/controller_x86" "$MODPATH/controller" || {
-            ui_print " ✗ Failed to Rename x86 Controller!  "
-            print_failure_and_exit "binary"
-          }
-          chmod 0755 "$MODPATH/controller" || {
-            ui_print " ✗ Failed to Set Permissions (controller)!  "
-            print_failure_and_exit "binary"
-          }
-          ui_print " ✔ Installed x86 Controller     "
-          ui_print " ➤ ($ABI)                        "
-          CONTROLLER_INSTALLED=true
-          
-          rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_armv7" "$MODPATH/controller_x86_64" 2>/dev/null
+          rm -f "$MODPATH/controller_arm64" "$MODPATH/controller_armv7" 2>/dev/null
           break
         fi
       fi
@@ -308,7 +285,6 @@ if $INSTALL_SUCCESS; then
       ui_print " ➤ • ARM64 (arm64-v8a)          "
       ui_print " ➤ • ARM32 (armeabi-v7a)        "
       ui_print " ➤ • x86_64                     "
-      ui_print " ➤ • x86                        "
       print_failure_and_exit "binary"
     fi
   print_box_end
