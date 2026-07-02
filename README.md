@@ -18,6 +18,7 @@
 <a href="#-webui"><img src="https://img.shields.io/badge/🖥_WebUI-1f2937?style=for-the-badge" alt="WebUI" /></a>
 <a href="#-faq"><img src="https://img.shields.io/badge/❓_FAQ-1f2937?style=for-the-badge" alt="FAQ" /></a>
 <a href="https://t.me/COPG_module"><img src="https://img.shields.io/badge/💬_Telegram-2CA5E0?style=for-the-badge" alt="Telegram" /></a>
+<a href="#-support-copg"><img src="https://img.shields.io/badge/Support-f59e0b?style=for-the-badge&logo=bitcoin&logoColor=white" alt="Support" /></a>
 
 </div>
 
@@ -229,6 +230,23 @@ the <b>KSU WebUI</b> app and open COPG from there.
 
 > 🌐 **Translations are community‑driven.** Only English &amp; Persian are maintained by the author —
 > PRs for the other languages are very welcome!
+
+---
+
+## ₿ Support COPG
+
+COPG is developed in my spare time and given away free. If it leveled up your games, please consider
+supporting with **any amount you wish** — every bit is real motivation for stronger, continued
+development. And a ⭐ on GitHub helps a lot too!
+
+| Network | Address |
+| --- | --- |
+| ![USDT ERC20](https://img.shields.io/badge/USDT-ERC20-627EEA?style=flat-square&logo=ethereum&logoColor=white) | `0xB8eb7Ea033823C9aA4616B0648B89CDbC931BAAd` |
+| ![USDT TRC20](https://img.shields.io/badge/USDT-TRC20-EF0027?style=flat-square&logo=tron&logoColor=white) | `TMMDAyJ9Fs3yQpidd2Q4eYLTMkM1hsrauV` |
+| ![USDT BEP20](https://img.shields.io/badge/USDT-BEP20-F0B90B?style=flat-square&logo=binance&logoColor=white) | `0xB8eb7Ea033823C9aA4616B0648B89CDbC931BAAd` |
+| ![GRAM TON](https://img.shields.io/badge/GRAM-TON-0098EA?style=flat-square&logo=ton&logoColor=white) | `UQAOHoREeGeJ0_kzJpSW3m-6Dlb_lzdHpT1a-gA7NkbuCM8N` |
+
+> ⚠️ Double‑check the **network** before sending — funds sent on the wrong chain can be lost.
 
 ---
 
