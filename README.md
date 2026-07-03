@@ -43,6 +43,12 @@ flagship it rewards.
 #### ⚙️ CPU Spoofing
 Spoof the CPU to flagship‑class silicon for apps that gate features on the chipset.
 
+#### 🎨 GPU Spoofing *(PRO · opt‑in)*
+Spoof the **GPU** — OpenGL renderer/vendor &amp; Vulkan device name — per app for games that gate
+graphics on the chip. **GPU spoofing is a PRO feature** (unlocked with a license); every other spoof
+stays free. It's a **resident** hook, so it sits behind a clear *use‑at‑your‑own‑risk*
+gate — **never enable it for anti‑cheat games.**
+
 </td>
 <td width="50%" valign="top">
 
@@ -155,7 +161,8 @@ straight from the manager. On **Magisk**, install the **KSU WebUI** app and open
 - 📋 **Library** — add &amp; manage **device profiles** and **per‑app spoof lists** with search,
   sort &amp; filters
 - ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU Spoofing
-  (pick the chip) / Prop Spoof / Android ID** and the **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
+  (pick the chip) / GPU Spoofing (pick the GPU) / Prop Spoof / Android ID** and the
+  **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
 - 📊 **Dashboard** — live system info: Android, ABI, Zygisk variant, root &amp; kernel
 - 💾 **Backup / Restore** &amp; **Sync from GitHub**
 - 🎨 **Light / Dark / AMOLED** themes · 🌍 **8 languages** (EN, FA, AR, DE, ES, ID, TH, ZH)
@@ -182,8 +189,9 @@ The WebUI is the recommended way to manage profiles, but you can also edit
 }
 ```
 
-Package **tags** are colon suffixes — e.g. `:cpu=<model>` (CPU spoof + pick the chip), `:cow`
-(prop spoof), `:aid` (Android ID), `:dnd` / `:dab` / `:kso` / `:nolog` (comfort tweaks).
+Package **tags** are colon suffixes — e.g. `:cpu=<model>` (CPU spoof + pick the chip),
+`:gpu=<model>` (GPU spoof + pick the GPU), `:cow` (prop spoof), `:aid` (Android ID),
+`:dnd` / `:dab` / `:kso` / `:nolog` (comfort tweaks).
 
 </details>
 
