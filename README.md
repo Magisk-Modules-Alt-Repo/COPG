@@ -8,7 +8,7 @@
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-5.3.1-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
+[![Version](https://img.shields.io/badge/version-5.6.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
 [![Zygisk](https://img.shields.io/badge/Zygisk-Compatible-34d399?style=for-the-badge)](https://github.com/topjohnwu/Magisk)
 [![Android](https://img.shields.io/badge/Android-9.0%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
 [![Downloads](https://img.shields.io/github/downloads/AlirezaParsi/COPG/total?style=for-the-badge&color=f59e0b)](https://github.com/AlirezaParsi/COPG/releases)
@@ -45,16 +45,23 @@ Spoof the CPU to flagship‑class silicon for apps that gate features on the chi
 
 #### 🎨 GPU Spoofing *(PRO · opt‑in)*
 Spoof the **GPU** — OpenGL renderer/vendor &amp; Vulkan device name — per app for games that gate
-graphics on the chip. **GPU spoofing is a PRO feature** (unlocked with a license); every other spoof
-stays free. It's a **resident** hook, so it sits behind a clear *use‑at‑your‑own‑risk*
-gate — **never enable it for anti‑cheat games.**
+graphics on the chip. **GPU spoofing is a PRO feature** (unlocked with a license). It's a **resident**
+hook, so it sits behind a clear *use‑at‑your‑own‑risk* gate — **never enable it for anti‑cheat games.**
 
 </td>
 <td width="50%" valign="top">
 
 #### 🧬 Prop Spoofing &amp; Android ID
-Stealth **copy‑on‑write** prop spoof (fingerprint, build props &amp; more) plus per‑app **Android ID**
-— the module unloads before the game runs, so nothing of COPG stays mapped in memory.
+Stealth **copy‑on‑write** prop spoof (fingerprint, build props &amp; more) *(PRO)* and per‑app
+**Android ID** *(PRO)* — both are stealth: the module unloads before the game runs, so nothing of
+COPG stays mapped in memory — safe even for anti‑cheat games. (CPU spoof, device profiles, Build/serial
+fields and block‑CPU stay free.)
+
+#### 📶 SIM / Carrier Spoofing *(PRO)*
+Make an app read a different **network carrier** — name, operator code (MCC/MNC) &amp; country — per
+app, even a **different carrier per SIM slot**. **Safe** mode is fully stealth (anti‑cheat safe);
+**Aggressive** mode also covers the newer subscription API but is resident (opt‑in, never for
+anti‑cheat games).
 
 #### 🎛️ Per‑App Comfort Tweaks
 Auto **Do‑Not‑Disturb**, **disable auto‑brightness**, **keep screen on** and **stop logging** —
@@ -64,7 +71,7 @@ applied only while a tagged game is active, then restored.
 </tr>
 </table>
 
-> 🔁 **Add or remove devices, games &amp; apps without a reboot.** ✨ Fully customizable. 🌍 8‑language
+> 🔁 **Add or remove devices, games &amp; apps without a reboot.** ✨ Fully customizable. 🌍 9‑language
 > WebUI with Light / Dark / AMOLED themes.
 
 ---
@@ -161,11 +168,12 @@ straight from the manager. On **Magisk**, install the **KSU WebUI** app and open
 - 📋 **Library** — add &amp; manage **device profiles** and **per‑app spoof lists** with search,
   sort &amp; filters
 - ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU Spoofing
-  (pick the chip) / GPU Spoofing (pick the GPU) / Prop Spoof / Android ID** and the
-  **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
+  (pick the chip) / GPU Spoofing (pick the GPU) / SIM Spoof (pick the carrier) / Prop Spoof /
+  Android ID** and the **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
 - 📊 **Dashboard** — live system info: Android, ABI, Zygisk variant, root &amp; kernel
+- 🆔 **Advertising ID** — view, randomize, set a custom one or restore your real ID (Settings · free)
 - 💾 **Backup / Restore** &amp; **Sync from GitHub**
-- 🎨 **Light / Dark / AMOLED** themes · 🌍 **8 languages** (EN, FA, AR, DE, ES, ID, TH, ZH)
+- 🎨 **Light / Dark / AMOLED** themes · 🌍 **9 languages** (EN, FA, AR, DE, ES, ID, TH, TR, ZH)
 
 <details>
 <summary><b>⚙️ Advanced — edit profiles by hand</b></summary>
