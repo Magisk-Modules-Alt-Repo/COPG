@@ -4,6 +4,10 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
+## v5.6.1
+### Fixes
+*   **Free tier can no longer open the GPU / SIM profile pickers.** On the free tier, tapping a package's GPU or SIM carrier picker now shows the upgrade prompt instead of opening the add / edit list. (Spoofing itself was already blocked for free users — this just keeps the PRO editors out of the free UI.)
+
 ## v5.6.0
 ### Carrier / SIM spoof — new PRO feature, per app
 *   **Fake the SIM carrier per app.** A new **SIM / Carrier** toggle in the package editor makes an app read a different network operator — carrier name, operator code (MCC/MNC), and country. Pick from a built-in list of carriers, or **add your own** (name / MCC / MNC / country) and edit or delete them later, just like the CPU and GPU pickers.
