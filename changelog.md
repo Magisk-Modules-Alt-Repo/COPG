@@ -4,7 +4,7 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
-## v5.7.0
+## v5.7.1
 ### Hide mock location — new PRO feature, per app
 *   **Make an app accept your mock GPS as real.** A new **Hide Mock Location** toggle in the package editor stops an app from seeing that your location comes from a GPS-spoofer / joystick app — `Location.isMock()` and the mock-provider flag read false, so location apps and games treat the coordinates as genuine.
 *   **Covers every way the location arrives.** It clears the mock flag on the Location object itself — not just one getter — so it works whether the app reads through the system location manager, Google's fused provider, or a native / Unity caller. An app that builds its own mock Location to *test* for tampering still behaves normally, so the hook doesn't give itself away.
@@ -14,6 +14,7 @@
 
 ### Fixes
 *   **Aggressive SIM — network country no longer shows your real region.** With an aggressive SIM carrier set, the *Network* country in device-info apps kept showing your real country instead of the spoofed carrier's. Some apps read the network country through a binder call the previous carrier hook didn't cover; it's now intercepted too, so the network country matches the spoofed carrier.
+*   **Translation parity across all 9 languages.** The *delete backup* strings now appear translated instead of in English on Arabic, German, Spanish, Indonesian, Thai, Chinese and Turkish.
 
 ### Other improvements
 *   **License card shows days remaining.** Settings → License now displays how many days are left on your PRO license.
