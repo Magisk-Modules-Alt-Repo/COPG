@@ -7,6 +7,9 @@
     { "key": "9020a",      "name": "HiSilicon Kirin 9020A" },
     { "key": "9030pro",    "name": "HiSilicon Kirin 9030 Pro" },
     { "key": "xuanjie_o1", "name": "Xiaomi Xring O1" },
-    { "key": "xuanjie_o3", "name": "Xiaomi Xring O3" }
+    { "key": "xuanjie_o3", "name": "Xiaomi Xring O3" },
+    { "key": "9030s",      "name": "HiSilicon Kirin 9030S" },
+    { "key": "dimensity8350",     "name": "MediaTek Dimensity 8350" },
+    { "key": "dimensity9400plus", "name": "MediaTek Dimensity 9400+" }
   ]
 }

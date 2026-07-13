@@ -1,17 +1,15 @@
 {
-  "cpu_spoof": {
-    "blacklist": [
-      "com.bbl.mobilebanking"
-    ],
-    "cpu_only_packages": [
-      "com.epicgames.fortnite",
-      "com.miraclegames.farlight84"
-    ]
-  },
+  "PACKAGES_THISDEVICE": [
+    "com.epicgames.fortnite:cpu=sd8elite",
+    "com.miraclegames.farlight84:cpu=sd8elite",
+    "com.bbl.mobilebanking:blocked",
+    "com.netease.yysls:gpu=adreno830"
+  ],
+  "PACKAGES_THISDEVICE_DEVICE": {},
   "PACKAGES_REDMAGIC_9_PRO": [
     "com.supercell.brawlstars:blocked",
     "com.blizzard.diablo.immortal:blocked",
-    "com.netease.newspike:blocked",
+    "com.netease.newspike:blocked:gpu=adreno830",
     "com.gamedevltd.destinywarfare:blocked",
     "com.pikpok.dr2.play:blocked",
     "com.CarXTech.highWay:blocked",
@@ -141,7 +139,6 @@
     "com.rekoo.pubgm:blocked",
     "com.tencent.tmgp.pubgmhd:blocked",
     "com.vng.pubgmobile:blocked",
-    "com.pubg.imobile:blocked",
     "com.tencent.ig:blocked"
   ],
   "PACKAGES_REDMAGIC_11_PRO_DEVICE": {
@@ -187,6 +184,17 @@
     "MODEL": "SM-F9460",
     "FINGERPRINT": "samsung/q2qzh/q2q:15/UP1A.231005.007/F946BXXU1BWK4:user/release-keys",
     "PRODUCT": "SM-F9460"
+  },
+  "PACKAGES_GALAXY_TAB_S9_ULTRA": [
+    "com.pubg.imobile:blocked"
+  ],
+  "PACKAGES_GALAXY_TAB_S9_ULTRA_DEVICE": {
+    "BRAND": "samsung",
+    "DEVICE": "Galaxy Tab S9 Ultra",
+    "MANUFACTURER": "samsung",
+    "MODEL": "SM-X916B",
+    "FINGERPRINT": "samsung/gts9ultraxx/gts9ultra:16/BP2A.250605.031/X916BXXU6EZE3:user/release-keys",
+    "PRODUCT": "SM-X916B"
   },
   "PACKAGES_SONY_XPERIA_1_III": [
     "com.gameloft.android.ANMP.GloftA9HM:blocked"
