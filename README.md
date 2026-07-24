@@ -8,7 +8,7 @@
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-5.6.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
+[![Version](https://img.shields.io/badge/version-5.9.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
 [![Zygisk](https://img.shields.io/badge/Zygisk-Compatible-34d399?style=for-the-badge)](https://github.com/topjohnwu/Magisk)
 [![Android](https://img.shields.io/badge/Android-9.0%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
 [![Downloads](https://img.shields.io/github/downloads/AlirezaParsi/COPG/total?style=for-the-badge&color=f59e0b)](https://github.com/AlirezaParsi/COPG/releases)
@@ -48,6 +48,15 @@ Spoof the **GPU** — OpenGL renderer/vendor &amp; Vulkan device name — per ap
 graphics on the chip. **GPU spoofing is a PRO feature** (unlocked with a license). It's a **resident**
 hook, so it sits behind a clear *use‑at‑your‑own‑risk* gate — **never enable it for anti‑cheat games.**
 
+#### 📡 IMEI &amp; Device ID *(PRO)*
+Fake the **IMEI / device ID** — **per app**, or **device‑wide** with the new **Global IMEI** (hooks the
+phone service so Settings, `*#06#` and every app read it; runs in a separate process apps can't scan, so
+**no risk gate**).
+
+#### 🔒 DRM / Widevine *(PRO)*
+Report a higher **Widevine security level** (L1 / L2 / L3) and spoof the DRM **device &amp; system ID**
+for apps that gate or display it.
+
 </td>
 <td width="50%" valign="top">
 
@@ -62,6 +71,19 @@ Make an app read a different **network carrier** — name, operator code (MCC/MN
 app, even a **different carrier per SIM slot**. **Safe** mode is fully stealth (anti‑cheat safe);
 **Aggressive** mode also covers the newer subscription API but is resident (opt‑in, never for
 anti‑cheat games).
+
+#### 🆔 Per‑App Advertising ID *(PRO)*
+Give each app its **own Google Advertising ID** — automatic per‑app, or pin an exact UUID — for ad /
+reward / referral / multi‑account apps where each install should look like a different device.
+
+#### 🧩 Per‑App App Set ID *(PRO)*
+Give each app its **own Google App Set ID** — the resettable fingerprint signal ad / analytics SDKs
+read via Play Services — automatic per‑app, or pin an exact UUID, so each looks like a separate device.
+It's a **resident** hook behind a *use‑at‑your‑own‑risk* gate — **never for anti‑cheat games.**
+
+#### 🛡️ Privacy Hides
+**Hide VPN** (pairip‑safe, free) · **Mock‑Location hide** *(PRO)* · **Hide Developer Options + USB
+debugging** (free) — pass the checks that banking &amp; privacy‑sensitive apps run.
 
 #### 🎛️ Per‑App Comfort Tweaks
 Auto **Do‑Not‑Disturb**, **disable auto‑brightness**, **keep screen on** and **stop logging** —
@@ -105,20 +127,20 @@ applied only while a tagged game is active, then restored.
 <table>
   <tr>
     <td align="center" width="25%">
-      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260614-121040_KsuWebUI.png?raw=true" alt="Dashboard light" />
-      <br><sub><b>Dashboard</b> · Light</sub>
+      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260703-114658_WebUI%20X.png?raw=true" alt="Dashboard" />
+      <br><sub><b>Dashboard</b> · System info</sub>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260614-121848_WebUI%20X.png?raw=true" alt="Dashboard dark" />
-      <br><sub><b>Dashboard</b> · Dark</sub>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260614-121127_KsuWebUI.png?raw=true" alt="Library packages" />
+      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260712-032329_WebUI%20X.png?raw=true" alt="Library packages" />
       <br><sub><b>Library</b> · Packages</sub>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260614-121204_KsuWebUI.png?raw=true" alt="Add package" />
-      <br><sub><b>Add Package</b> · Spoof + Tweaks</sub>
+      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260711-113747_WebUI%20X.png?raw=true" alt="Per-app spoof toggles" />
+      <br><sub><b>Per-App</b> · Spoof toggles</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/AlirezaParsi/COPG/blob/screenshots/Screenshot_20260702-162602_WebUI%20X.png?raw=true" alt="GPU profile editor" />
+      <br><sub><b>GPU</b> · Profile editor</sub>
     </td>
   </tr>
 </table>
@@ -167,11 +189,13 @@ straight from the manager. On **Magisk**, install the **KSU WebUI** app and open
 
 - 📋 **Library** — add &amp; manage **device profiles** and **per‑app spoof lists** with search,
   sort &amp; filters
-- ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU Spoofing
-  (pick the chip) / GPU Spoofing (pick the GPU) / SIM Spoof (pick the carrier) / Prop Spoof /
-  Android ID** and the **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
+- ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU / GPU / SIM /
+  Prop / Android ID / Advertising ID (GAID) / App Set ID / DRM / IMEI / Mock‑Location / Hide VPN /
+  Hide Developer Options** and the **DND / Auto‑Brightness / Keep‑Screen‑On** tweaks
 - 📊 **Dashboard** — live system info: Android, ABI, Zygisk variant, root &amp; kernel
 - 🆔 **Advertising ID** — view, randomize, set a custom one or restore your real ID (Settings · free)
+- 📡 **Global Hooks** — device‑wide **Global IMEI** (Settings): one fake IMEI for every app, `*#06#`
+  and the dialer
 - 💾 **Backup / Restore** &amp; **Sync from GitHub**
 - 🎨 **Light / Dark / AMOLED** themes · 🌍 **9 languages** (EN, FA, AR, DE, ES, ID, TH, TR, ZH)
 
@@ -199,6 +223,9 @@ The WebUI is the recommended way to manage profiles, but you can also edit
 
 Package **tags** are colon suffixes — e.g. `:cpu=<model>` (CPU spoof + pick the chip),
 `:gpu=<model>` (GPU spoof + pick the GPU), `:cow` (prop spoof), `:aid` (Android ID),
+`:gaid` (Advertising ID), `:appset` (App Set ID), `:drm` (Widevine), `:imei` (IMEI), `:sim=<carrier>` / `:simx=<carrier>`
+(SIM · safe / aggressive), `:mock` (mock‑location hide), `:vpn` / `:vpns` (VPN hide),
+`:hidedev` (hide developer options), `:blocked` (force real CPU),
 `:dnd` / `:dab` / `:kso` / `:nolog` (comfort tweaks).
 
 </details>
