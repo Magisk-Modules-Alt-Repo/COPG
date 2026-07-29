@@ -6,6 +6,7 @@ name: Notify KernelSU module repo
 on:
   release:
     types: [published]
+  workflow_dispatch:   # manual re-fire when a sync failed/was missed
 
 jobs:
   dispatch:
