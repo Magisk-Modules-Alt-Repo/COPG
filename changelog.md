@@ -4,7 +4,7 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
-## v6.1.1
+## v6.1.2
 *Adds per-app timezone spoofing — make an app believe your phone is in another part of the world, without touching the real system clock.*
 
 ### Timezone spoof — new feature
