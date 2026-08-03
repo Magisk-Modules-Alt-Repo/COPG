@@ -4,6 +4,19 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
+## v6.2.5
+*Adds per-app language & region spoofing — make an app read (and render in) another language and country, without changing your real system language.*
+
+### Language & region spoof — new feature
+*   **Give each app its own language.** A new **Language** row in the package editor makes an app read a **different language & country** than the rest of your phone — useful for region-locked content, store pricing and language-based checks. Where the app ships that language's text, its UI actually **displays** in it too.
+*   **Built-in locales or add your own.** Pick from a searchable list of common locales (English–US/UK, Spanish, Portuguese–Brazil, French, German, Arabic, Japanese, Chinese, …) or tap **＋** to add any BCP-47 tag (e.g. `pt-BR`, `es-MX`, `zh-Hans-CN`) — saved and reusable across apps, just like the CPU, GPU and timezone lists.
+*   **Applied the stealthy way — nothing loads into the app.** The language is injected the same way Android's own per-app-language setting works, from the **system side**. Nothing of COPG loads into the app's own process, so it's invisible to anti-cheat / integrity memory scans and safe for hardened apps. **Free**, no risk warning.
+*   **No reboot to change.** Turn it on and relaunch the app; adding or changing a language applies without a reboot.
+
+### Resident spoofs — new hooking engine (works in more apps)
+*   **Mock-Location, Advertising ID, App Set ID, Widevine (DRM) and per-app IMEI now use a new hooking engine.** These resident spoofs were moved to a hooking technique that no longer conflicts with **LSPosed / Xposed** and keeps working inside more **Play-protected** apps that used to crash — so they apply reliably where they previously failed. The spoof behaviour itself is unchanged, and they are still resident, so the same red *"use at your own risk"* rules apply and they should never be used on anti-cheat games.
+
+---
 ## v6.1.2
 *Adds per-app timezone spoofing — make an app believe your phone is in another part of the world, without touching the real system clock.*
 
