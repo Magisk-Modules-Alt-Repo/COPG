@@ -4,6 +4,14 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
+## v6.3.1
+*Bug-fix release — fixes license activation on some newer devices.*
+
+### Fixes
+*   **License now activates on every device (Samsung Galaxy S25 Ultra & others).** On phones whose CPU‑ABI list reports a non‑standard name, the installer could fail to select the licensing helper — leaving buyers stuck on **"Could not read device fingerprint"** with no way to get their device code or activate PRO. The installer now falls back to the matching helper for your architecture and verifies it was installed, so activation works everywhere. If you hit this error, just reinstall this version.
+*   **Device share codes now include the baseband.** Sharing a device profile now also carries the **Baseband** (`Build.RADIO`) value, so an imported profile matches the original exactly.
+
+---
 ## v6.3.0
 *Adds a per-app browser identity (User-Agent) spoof, plus baseband and per-app serial to round out the device fingerprint.*
 
