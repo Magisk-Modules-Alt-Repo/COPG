@@ -8,7 +8,7 @@
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-6.3.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
+[![Version](https://img.shields.io/badge/version-6.4.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
 [![Zygisk](https://img.shields.io/badge/Zygisk-Compatible-34d399?style=for-the-badge)](https://github.com/topjohnwu/Magisk)
 [![Android](https://img.shields.io/badge/Android-9.0%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
 [![Downloads](https://img.shields.io/github/downloads/AlirezaParsi/COPG/total?style=for-the-badge&color=f59e0b)](https://github.com/AlirezaParsi/COPG/releases)
@@ -47,6 +47,11 @@ Spoof the CPU to flagship‑class silicon for apps that gate features on the chi
 Spoof the **GPU** — OpenGL renderer/vendor &amp; Vulkan device name — per app for games that gate
 graphics on the chip. **GPU spoofing is a PRO feature** (unlocked with a license). It's a **resident**
 hook, so it sits behind a clear *use‑at‑your‑own‑risk* gate — **never enable it for anti‑cheat games.**
+
+#### 🖥️ Refresh‑Rate Spoof *(free)*
+Make an app read a **custom display refresh rate** (e.g. 120 / 144 / 165 Hz) — the current rate **and**
+the full supported‑modes list — for device‑info apps and games that show or gate on the panel's Hz.
+Resident hook behind a *use‑at‑your‑own‑risk* gate — never for anti‑cheat games.
 
 #### 📡 IMEI &amp; Device ID *(PRO)*
 Fake the **IMEI / device ID** — **per app**, or **device‑wide** with the new **Global IMEI** (hooks the
@@ -94,7 +99,8 @@ read via Play Services — automatic per‑app, or pin an exact UUID, so each lo
 It's a **resident** hook behind a *use‑at‑your‑own‑risk* gate — **never for anti‑cheat games.**
 
 #### 🛡️ Privacy Hides
-**Hide VPN** (pairip‑safe, free) · **Mock‑Location hide** *(PRO)* · **Hide Developer Options + USB
+**Hide VPN** — covers both the Java (network‑interface / capabilities) and native interface checks,
+pairip‑safe *(free)* · **Mock‑Location hide** *(PRO)* · **Hide Developer Options + USB
 debugging** (free) — pass the checks that banking &amp; privacy‑sensitive apps run.
 
 #### 🎛️ Per‑App Comfort Tweaks
@@ -124,6 +130,8 @@ per‑app **screen DPI** — applied only while a tagged game is active, then re
 | **Fortnite** | 120 FPS |
 | **Asphalt 9** | 120 FPS |
 | **Farlight 84** | Max Graphics |
+| **Arena Breakout** | 90 / 120 FPS |
+| **Honor of Kings** | High‑FPS mode |
 | _…and 69+ more_ | Premium tiers unlocked |
 
 </div>
