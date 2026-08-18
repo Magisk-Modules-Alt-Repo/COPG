@@ -4,6 +4,26 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
+## v6.5.0
+*Adds a per-app proxy (route one app through your own SOCKS5/HTTP/SOCKS4 exit — no VPN, no interface), a full SIM/carrier overhaul with a phantom-SIM mode and 140 carriers, and closes a device-fingerprint leak that some detectors were catching.*
+
+### Per-App Proxy — new PRO feature
+*   **Route just one app through your own proxy.** Point any app at your **SOCKS5, HTTP, or SOCKS4** proxy so its traffic exits from that IP and country — the rest of your phone stays on your real connection. Pair it with a matching SIM/region so device, SIM and IP all agree.
+*   **Stealthy and ban-safe.** It works at the kernel level: **no VPN, no network interface the app can see, and nothing runs inside the app** — so there's nothing on-device to detect. The only thing that matters is the proxy you pick (use a clean/residential one; a flagged datacenter IP can be blocked by strict services — that's the proxy's reputation, not the module).
+*   **Manage proxies in the app.** A new **Proxy** picker lets you save proxies (name, type, host, port, optional username/password) and assign one per app. No reboot — it applies within seconds.
+
+### SIM / Carrier spoof — big overhaul
+*   **Phantom SIM — make a SIM appear on an empty slot.** A new **Add SIM** mode makes a device with no SIM (or a free slot) report a full SIM present — status, carrier name, operator code and country all show up in device-info apps.
+*   **Carrier and country now land everywhere.** Fixed cases where the operator code or country stayed blank in some apps (e.g. DevCheck) even with the carrier spoof on. Status, name, code and country now report consistently.
+*   **140 carriers across 67 countries.** The carrier list grew from 12 to **140** real carriers worldwide — pick any, or add your own.
+
+### Device consistency — detection fix
+*   **Closes a fingerprint leak some detectors caught.** With COW prop spoofing on, only the *base* device props were faked while their **partition copies** (system / vendor / odm / product / system_ext) kept the real values — a multi-source mismatch some detection tools flagged. Now every partition copy of the device fields **and** all nine build-fingerprint variants (including `ro.system.build.fingerprint` and `ro.product.build.fingerprint`) are faked together, so there's no cross-source conflict. Thanks to the users who reported this.
+
+### Other
+*   **Clear data, per app.** Each installed app in the list now has a **Clear data** button — it wipes the app's stored data (logins, cache, saved IDs) so the next time you open it, it re-reads your spoofed device as a brand-new install. Confirm-gated, since it can't be undone.
+
+---
 ## v6.4.0
 *Adds a display refresh-rate spoof, brings every advanced spoof to Android 12–15, rebuilds VPN-hide for wider coverage, and unlocks high-FPS modes on more games.*
 
