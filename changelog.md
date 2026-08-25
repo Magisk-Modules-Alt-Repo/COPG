@@ -4,6 +4,22 @@
 #### **Telegram Channel**:
 - https://t.me/COPG_module
 ---
+## v6.6.0
+*Adds a device-wide "Disable FLAG_SECURE" so you can screenshot and screen-record apps that normally block it.*
+
+### Disable FLAG_SECURE — new free feature
+*   **Screenshot and record any app.** A new **Disable FLAG_SECURE** switch in Settings → Global Hooks lets you capture apps that block screenshots and screen recording (banking, chat, wallets, incognito tabs).
+*   **Invisible to the app.** It works in the system, not inside the app — the app still thinks its screen is protected and can't tell the flag was lifted, so there's nothing in-app to detect. It's **device-wide** (every app), toggled on/off with no reboot.
+*   **One caveat.** Protected streaming video (Netflix / Disney+ and other hardware-DRM playback) still records black — that block lives in the hardware, below where any app-level switch can reach.
+
+### No Storage Restrict — new free feature
+*   **Pick Android/data, obb, the SD-card root and Download in the file picker.** Android 11+ blocks selecting those folders through the system file picker (Storage Access Framework). A new **No Storage Restrict** switch in Settings → Global Hooks removes that block so file managers and backup apps can grant access to them again.
+*   **Works where the old Xposed module doesn't.** Newer Android renamed the internal check the popular module hooks, which is why it stopped working / needed forcing. COPG hooks the current name (and the old ones), so it keeps working across Android versions. Device-wide, toggled on/off with no reboot.
+
+### Under the hood — bootloop protection
+*   **Auto-recovery for the system-level hooks.** Disable FLAG_SECURE, VPN-hide and per-app Language all run inside the Android system. If a phone-specific quirk ever made one of them crash the system at startup, the module now notices after a few boots and starts that hook **off by itself** so the device boots normally — no recovery flash, no data loss. Your settings are kept and the feature comes back on the next clean boot.
+
+---
 ## v6.5.0
 *Adds a per-app proxy (route one app through your own SOCKS5/HTTP/SOCKS4 exit — no VPN, no interface), a full SIM/carrier overhaul with a phantom-SIM mode and 140 carriers, and closes a device-fingerprint leak that some detectors were catching.*
 
