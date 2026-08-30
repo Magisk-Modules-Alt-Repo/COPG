@@ -1,0 +1,68 @@
+name: Sync release
+
+# The Magisk Alt Repo lists this module through update.json (MMRL polls it). This
+# keeps update.json pointed at the latest AlirezaParsi/COPG release. Fired by the
+# source repo's release dispatch (repository_dispatch: sync-release), manually, or
+# on a 6h fallback poll in case a dispatch is missed.
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sync-release]
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  SOURCE_REPO: 'AlirezaParsi/COPG'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Sync update.json (+ changelog) to the latest source release
+        run: |
+          # Mirror the source repo's update.json (version / versionCode / zipUrl /
+          # changelog) — the zipUrl points at the source release, so nothing is
+          # re-hosted here; MMRL just needs the pointer fresh. Only the metadata is
+          # pulled: no module source is copied.
+          curl -fsSL "https://raw.githubusercontent.com/${SOURCE_REPO}/JSON/update.json" -o update.json.new
+          # sanity: must be valid JSON carrying a zipUrl before we replace anything
+          python3 -c "import json; d=json.load(open('update.json.new')); assert d.get('zipUrl'), 'no zipUrl'; print('source version', d.get('version'))"
+
+          changed=0
+          if ! cmp -s update.json.new update.json; then
+            mv update.json.new update.json
+            changed=1
+          else
+            rm -f update.json.new
+          fi
+
+          # keep the local changelog copy fresh too (best-effort; not fatal if absent)
+          curl -fsSL "https://raw.githubusercontent.com/${SOURCE_REPO}/JSON/changelog.md" -o changelog.md.new || true
+          if [ -f changelog.md.new ] && ! cmp -s changelog.md.new changelog.md; then
+            mv changelog.md.new changelog.md
+            changed=1
+          else
+            rm -f changelog.md.new
+          fi
+
+          echo "changed=$changed" >> "$GITHUB_ENV"
+
+      - name: Commit + push if changed
+        run: |
+          if [ "${changed:-0}" = "1" ]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add update.json changelog.md
+            VER=$(python3 -c "import json; print(json.load(open('update.json'))['version'])")
+            git commit -m "sync: update.json → ${VER}"
+            git push
+          else
+            echo "already up to date — nothing to sync"
+          fi
