@@ -2,13 +2,13 @@
 
 <img src="https://raw.githubusercontent.com/AlirezaParsi/COPG/refs/heads/JSON/module/banner.png" width="560" alt="COPG banner" />
 
-# 🎮 COPG
+# 🎮 COPG — Advanced Android Customization & Spoofing
 
-**The most advanced device &amp; CPU spoofer for Android — bypass restrictions and unlock premium graphics, higher FPS and exclusive features on most games and apps.**
+**A powerful platform for device & app spoofing, system-level control, and advanced ROM capabilities.**
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-6.7.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
+[![Version](https://img.shields.io/badge/version-7.3.0-818cf8?style=for-the-badge)](https://github.com/AlirezaParsi/COPG/releases)
 [![Zygisk](https://img.shields.io/badge/Zygisk-Compatible-34d399?style=for-the-badge)](https://github.com/topjohnwu/Magisk)
 [![Android](https://img.shields.io/badge/Android-9.0%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
 [![Downloads](https://img.shields.io/github/downloads/AlirezaParsi/COPG/total?style=for-the-badge&color=f59e0b)](https://github.com/AlirezaParsi/COPG/releases)
@@ -18,7 +18,12 @@
 <a href="#-webui"><img src="https://img.shields.io/badge/🖥_WebUI-1f2937?style=for-the-badge" alt="WebUI" /></a>
 <a href="#-faq"><img src="https://img.shields.io/badge/❓_FAQ-1f2937?style=for-the-badge" alt="FAQ" /></a>
 <a href="https://t.me/COPG_module"><img src="https://img.shields.io/badge/💬_Telegram-2CA5E0?style=for-the-badge" alt="Telegram" /></a>
+<a href="https://vendors.copg.my"><img src="https://img.shields.io/badge/🌐_Website-6d28d9?style=for-the-badge" alt="COPG Website" /></a>
 <a href="#-support-copg"><img src="https://img.shields.io/badge/Support-f59e0b?style=for-the-badge&logo=bitcoin&logoColor=white" alt="Support" /></a>
+
+**🌐 Official website — download COPG free & buy COPG PRO: [vendors.copg.my](https://vendors.copg.my)**
+
+🌐 Languages / 语言：**English** · [简体中文](README.zh.md)
 
 </div>
 
@@ -39,6 +44,12 @@ are otherwise gated to specific hardware. It pairs that with a **CPU spoofer**, 
 #### 🎯 Device Spoofing
 Per‑app device profiles (brand, model, fingerprint, SDK, **baseband**, **per‑app serial** and 12
 extra Build fields) so each game sees the exact flagship it rewards.
+
+#### 👥 Per‑User Spoofing *(new)*
+Give the **same app a different device per Android user** — dual‑apps / app clones (HyperOS, One UI),
+work profiles, second users. The main copy reads one phone, the clone reads another; each clone even
+gets its own derived Android ID / serial / advertising ID / IMEI. The app picker's **"Apps for"**
+drawer finds your clones automatically.
 
 #### ⚙️ CPU Spoofing
 Spoof the CPU to flagship‑class silicon for apps that gate features on the chipset.
@@ -95,9 +106,9 @@ fields and block‑CPU stay free.)
 
 #### 📶 SIM / Carrier Spoofing *(PRO)*
 Make an app read a different **network carrier** — name, operator code (MCC/MNC) &amp; country — per
-app, even a **different carrier per SIM slot**. **Safe** mode is fully stealth (anti‑cheat safe);
-**Aggressive** mode also covers the newer subscription API but is resident (opt‑in, never for
-anti‑cheat games).
+app, even a **different carrier per SIM slot**. Also spoof the per‑app, per‑slot **IMSI** and **ICCID**
+(SIM serial). **Safe** mode is fully stealth (anti‑cheat safe); **Aggressive** mode also covers the
+newer subscription API but is resident (opt‑in, never for anti‑cheat games).
 
 #### 🆔 Per‑App Advertising ID *(PRO)*
 Give each app its **own Google Advertising ID** — automatic per‑app, or pin an exact UUID — for ad /
@@ -119,6 +130,45 @@ your own latitude/longitude. Covers the normal location APIs **and** Google's Fu
 lat/lng change (accuracy/altitude stay real). Resident hook behind a *use‑at‑your‑own‑risk* gate —
 never for anti‑cheat games.
 
+#### 🗼 Cell Tower Spoof *(PRO)*
+Report a **fake serving cell** to an app — set the area code (LAC/TAC), cell ID (CID/CI/NCI) and
+optional **MCC/MNC** (network operator), so apps reading the cell towers (including `getAllCellInfo`)
+see a consistent fake location **and** carrier instead of your real one. Pairs with GPS + SIM so
+location, coordinates and network all agree. Resident hook behind a *use‑at‑your‑own‑risk* gate.
+
+#### 🧭 Sensor Spoof *(PRO · new)*
+Give each app its **own sensor fingerprint**. Anti‑fraud SDKs hash the device's sensor list
+(accelerometer, gyroscope, magnetometer…) into a stable ID — and a build that says one phone while the
+sensors say another is a red flag. COPG rewrites each sensor's **name *and* vendor** with a per‑app,
+stable‑but‑unique value. Resident hook behind a *use‑at‑your‑own‑risk* gate — never for anti‑cheat games.
+
+#### 🖼️ WebView Canvas Spoof *(PRO · new)*
+Break **canvas fingerprinting** in WebView apps. Sites hash a hidden `<canvas>` to identify you; COPG adds
+tiny, per‑app, *stable* noise so every WebView app reads a different but consistent canvas fingerprint,
+including inside iframes. (WebGL is already covered by GPU spoof.) Resident hook, risk‑gated.
+
+#### 🧠 Tensor Feature Unlock *(PRO · new)*
+Make chosen apps see Google's Pixel **Tensor** system features — so Google apps expose their Tensor‑gated
+**AI / exclusive functionality**. Runs **out‑of‑process in `system_server`**, so nothing loads into the
+app and it's undetectable (under the System‑Server Spoofs master switch — enable + reboot).
+
+#### 👤 Google Account Spoof *(PRO · new)*
+Make a chosen app read a **different Google‑account list** than the rest of your phone — **Hide** all
+accounts, or show one **fake email** per persona. Anti‑fraud SDKs (DoorDash / Forter) use the signed‑in
+accounts and a hidden per‑account ID to tie "different" accounts back to one device across data‑clears;
+this breaks that link. Out‑of‑process in `system_server` — stealth, pairip / anti‑cheat‑safe.
+
+#### 🏞️ Wallpaper ID Spoof *(PRO · new)*
+Report a **per‑app wallpaper ID** — a number Android bumps on every wallpaper change that survives
+data‑clear / reinstall, which fraud SDKs use as a device‑link signal. Set a normal‑looking value per
+persona so each looks like a different, real phone. Out‑of‑process (`system_server`), stealth, pairip‑safe.
+
+#### ⌨️ getprop Consistency *(PRO · new)*
+Some apps don't trust the Android APIs — they shell out to the **`getprop`** command and compare it
+against what the app reads directly, and a mismatch exposes the spoof. This makes a chosen app's child
+`getprop` return the **same spoofed values** as the API, so the cross‑check lines up. Pair it with the
+COW Prop Spoof. Resident hook behind a *use‑at‑your‑own‑risk* gate — never for anti‑cheat games.
+
 #### 🛡️ Privacy Hides
 **Hide VPN** — covers both the Java (network‑interface / capabilities) and native interface checks,
 pairip‑safe *(free)* · **Mock‑Location hide** *(PRO)* · **Hide Developer Options + USB
@@ -128,11 +178,25 @@ debugging** (free) — pass the checks that banking &amp; privacy‑sensitive ap
 Auto **Do‑Not‑Disturb**, **disable auto‑brightness**, **keep screen on**, **stop logging** and a
 per‑app **screen DPI** — applied only while a tagged game is active, then restored.
 
+#### 📦 Install Patches *(free)*
+Device‑wide package‑installer patches so you can install **modified, re‑signed or downgraded APKs**:
+disable **signature verification** (and force signature‑match checks to pass), **allow downgrade**,
+**disable the install verifier** (Play Protect scan) and **allow compressed `resources.arsc`**. It patches
+Android's installer inside `system_server`, so nothing loads into any app. Under the System‑Server Spoofs
+master switch (enable + reboot). This lowers a real security boundary for every install — only install
+APKs you trust.
+
+#### 🎙️ Concurrent Mic *(free · new)*
+Let **two apps use the microphone at once** — a game's in‑voice **plus** a screen recorder, or a call
+app while another app records. Android normally silences one capturer for privacy; COPG stops that
+silencing device‑wide while enabled. It works **out‑of‑process in the audio server** (nothing loads
+into the app), and toggles from the WebUI with **no reboot**.
+
 </td>
 </tr>
 </table>
 
-> 🔁 **Add or remove devices, games &amp; apps without a reboot.** ✨ Fully customizable. 🌍 9‑language
+> 🔁 **Add or remove devices, games &amp; apps without a reboot.** ✨ Fully customizable. 🌍 10‑language
 > WebUI with Light / Dark / AMOLED themes.
 
 ---
@@ -235,15 +299,17 @@ straight from the manager. On **Magisk**, install the **KSU WebUI** app and open
 - 📋 **Library** — add &amp; manage **device profiles** and **per‑app spoof lists** with search,
   sort &amp; filters
 - ➕ **Add Package** — pick any installed app, choose a device profile, toggle **CPU / GPU / SIM /
-  Prop / Android ID / Advertising ID (GAID) / App Set ID / DRM / IMEI / Timezone / Language /
-  WebView User‑Agent / Fake Uptime / Mock‑Location / Hide VPN / Hide Developer Options** and the
-  **DND / Auto‑Brightness / Keep‑Screen‑On / Screen‑DPI** tweaks
+  Prop / Android ID / Advertising ID (GAID) / App Set ID / DRM / IMEI / Sensor / Canvas / Tensor /
+  GPS / Proxy / Timezone / Language / WebView User‑Agent / Fake Uptime / Mock‑Location / Hide VPN /
+  Hide Developer Options** and the **DND / Auto‑Brightness / Keep‑Screen‑On / Screen‑DPI** tweaks
 - 📊 **Dashboard** — live system info: Android, ABI, Zygisk variant, root &amp; kernel
+- ✅ **Hook Status** — device‑wide board (Settings) showing the spoof values COPG has actually served
+  recently (model, CPU, Android ID, sensors, carrier…) with which app and when
 - 🆔 **Advertising ID** — view, randomize, set a custom one or restore your real ID (Settings · free)
 - 📡 **Global Hooks** — device‑wide **Global IMEI** (Settings): one fake IMEI for every app, `*#06#`
   and the dialer
 - 💾 **Backup / Restore** &amp; **Sync from GitHub**
-- 🎨 **Light / Dark / AMOLED** themes · 🌍 **9 languages** (EN, FA, AR, DE, ES, ID, TH, TR, ZH)
+- 🎨 **Light / Dark / AMOLED** themes · 🌍 **10 languages** (EN, FA, AR, DE, ES, PT‑BR, ID, TH, TR, ZH)
 
 <details>
 <summary><b>⚙️ Advanced — edit profiles by hand</b></summary>
@@ -272,6 +338,8 @@ Package **tags** are colon suffixes — e.g. `:cpu=<model>` (CPU spoof + pick th
 `:serial` (per‑app serial), `:gaid` (Advertising ID), `:appset` (App Set ID), `:drm` (Widevine),
 `:imei` (IMEI), `:sim=<carrier>` / `:simx=<carrier>` (SIM · safe / aggressive), `:tz=<zone>` (timezone),
 `:lang=<bcp47>` (language / region), `:ua=<profile>` (WebView User‑Agent), `:uptime=<sec>` (fake uptime),
+`:sensor` (sensor‑roster spoof), `:webfp` (WebView canvas spoof), `:tensorfeat` (Pixel Tensor features),
+`:gps=<lat>,<lng>` (GPS location), `:proxy` (per‑app proxy),
 `:mock` (mock‑location hide), `:vpn` / `:vpns` (VPN hide), `:hidedev` (hide developer options),
 `:blocked` (force real CPU), `:dnd` / `:dab` / `:kso` / `:nolog` / `:dpi=<n>` (comfort tweaks).
 
@@ -315,6 +383,9 @@ the <b>KSU WebUI</b> app and open COPG from there.
 
 [![Telegram Channel](https://img.shields.io/badge/Telegram_Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/COPG_module)
 [![Telegram Group](https://img.shields.io/badge/Telegram_Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/TheAOSP)
+[![Email](https://img.shields.io/badge/Email-support@copg.my-EA4335?style=for-the-badge&logo=maildotru&logoColor=white)](mailto:support@copg.my)
+
+**📧 Support email: [support@copg.my](mailto:support@copg.my)**
 
 </div>
 
@@ -325,14 +396,13 @@ the <b>KSU WebUI</b> app and open COPG from there.
 
 ## ₿ Support COPG
 
-COPG is developed in my spare time and given away free. If it leveled up your games, please consider
+COPG is developed in my spare time and given away free. If it leveled up your games or apps, please consider
 supporting with **any amount you wish** — every bit is real motivation for stronger, continued
 development. And a ⭐ on GitHub helps a lot too!
 
 | Network | Address |
 | --- | --- |
 | ![USDT ERC20](https://img.shields.io/badge/USDT-ERC20-627EEA?style=flat-square&logo=ethereum&logoColor=white) | `0xB8eb7Ea033823C9aA4616B0648B89CDbC931BAAd` |
-| ![USDT TRC20](https://img.shields.io/badge/USDT-TRC20-EF0027?style=flat-square&logo=tron&logoColor=white) | `TMMDAyJ9Fs3yQpidd2Q4eYLTMkM1hsrauV` |
 | ![USDT BEP20](https://img.shields.io/badge/USDT-BEP20-F0B90B?style=flat-square&logo=binance&logoColor=white) | `0xB8eb7Ea033823C9aA4616B0648B89CDbC931BAAd` |
 | ![GRAM TON](https://img.shields.io/badge/GRAM-TON-0098EA?style=flat-square&logo=ton&logoColor=white) | `UQAOHoREeGeJ0_kzJpSW3m-6Dlb_lzdHpT1a-gA7NkbuCM8N` |
 
@@ -352,7 +422,7 @@ development. And a ⭐ on GitHub helps a lot too!
 
 <div align="center">
 
-**If COPG leveled up your games, drop a ⭐ — it really helps!**
+**If COPG leveled up your games or apps, drop a ⭐ — it really helps!**
 
 Made with ❤️ by **Alireza Parsi** · © 2026 COPG Project
 
