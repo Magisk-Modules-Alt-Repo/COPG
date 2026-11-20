@@ -52,6 +52,18 @@ jobs:
             rm -f changelog.md.new
           fi
 
+          # keep the public-facing READMEs fresh too — the alt-repo module page renders this repo's
+          # README.md, so it must track the source feature list (best-effort; not fatal if absent).
+          for rf in README.md README.zh.md; do
+            curl -fsSL "https://raw.githubusercontent.com/${SOURCE_REPO}/JSON/${rf}" -o "${rf}.new" || true
+            if [ -f "${rf}.new" ] && ! cmp -s "${rf}.new" "${rf}"; then
+              mv "${rf}.new" "${rf}"
+              changed=1
+            else
+              rm -f "${rf}.new"
+            fi
+          done
+
           echo "changed=$changed" >> "$GITHUB_ENV"
 
       - name: Commit + push if changed
@@ -59,9 +71,9 @@ jobs:
           if [ "${changed:-0}" = "1" ]; then
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add update.json changelog.md
+            git add update.json changelog.md README.md README.zh.md
             VER=$(python3 -c "import json; print(json.load(open('update.json'))['version'])")
-            git commit -m "sync: update.json → ${VER}"
+            git commit -m "sync: update.json + README → ${VER}"
             git push
           else
             echo "already up to date — nothing to sync"
